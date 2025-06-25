@@ -1,0 +1,278 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Importando fontes do Google */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 17.6%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 17.6%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 17.6%;
+
+    /* Nova paleta baseada na descrição */
+    --primary: 294 65% 21%; /* Roxo escuro #4C1F4B */
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 294 30% 90%; /* Lilás claro */
+    --secondary-foreground: 294 65% 21%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 294 45% 70%; /* Lilás médio */
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 294 65% 21%;
+
+    --radius: 1rem; /* 16px conforme especificado */
+
+    /* Cores específicas da nova paleta */
+    --purple-dark: 294 65% 21%; /* #4C1F4B */
+    --purple-medium: 294 45% 45%; /* Roxo médio */
+    --lilac-light: 294 30% 85%; /* Lilás claro */
+    --text-primary: 0 0% 17.6%; /* #2D2D2D */
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 17.6%;
+    --sidebar-primary: 294 65% 21%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 294 30% 90%;
+    --sidebar-accent-foreground: 294 65% 21%;
+    --sidebar-border: 0 0% 92%;
+    --sidebar-ring: 294 65% 21%;
+  }
+
+  .dark {
+    --background: 0 0% 11.8%; /* #1E1E1E */
+    --foreground: 0 0% 95%; /* #F2F2F2 */
+
+    --card: 0 0% 11.8%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 11.8%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 294 45% 70%; /* Lilás mais claro no modo escuro */
+    --primary-foreground: 0 0% 11.8%;
+
+    --secondary: 294 20% 20%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 294 35% 55%;
+    --accent-foreground: 0 0% 95%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 294 45% 70%;
+
+    --sidebar-background: 0 0% 11.8%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 294 45% 70%;
+    --sidebar-primary-foreground: 0 0% 11.8%;
+    --sidebar-accent: 294 20% 20%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 294 45% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-white text-text-primary font-inter;
+    color: #2D2D2D;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  /* Hierarquia de tipografia padronizada */
+  .title-primary {
+    @apply text-xl font-bold font-poppins;
+    color: #4C1F4B;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .subtitle-section {
+    @apply text-lg md:text-xl font-semibold;
+    color: #232323;
+    letter-spacing: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle-description {
+    @apply text-sm md:text-base;
+    color: #5E5E5E;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  .text-small {
+    @apply text-sm;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  /* Botões padronizados */
+  .btn-standard {
+    @apply rounded-xl font-medium transition-all duration-200;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .btn-primary-custom {
+    @apply btn-standard bg-purple-700 text-white hover:bg-purple-800;
+    background-color: #4C1F4B;
+  }
+
+  .btn-secondary-custom {
+    @apply btn-standard bg-purple-200 text-purple-800 hover:bg-purple-300;
+    background-color: #A883B7;
+    color: white;
+  }
+
+  /* Espaçamentos padronizados */
+  .section-spacing {
+    @apply px-4;
+    margin-bottom: 24px;
+  }
+
+  .large-section-spacing {
+    @apply px-4;
+    margin-bottom: 32px;
+  }
+
+  /* Cards padronizados */
+  .card-standard {
+    @apply bg-white rounded-2xl shadow-soft p-4 w-full;
+    border-radius: 16px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  }
+}
+
+@layer components {
+  /* Sombra suave padrão */
+  .shadow-soft {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Cards com bordas arredondadas - mobile-first */
+  .card-rounded {
+    @apply rounded-2xl shadow-soft;
+  }
+
+  /* Gradiente da paleta */
+  .gradient-palette {
+    @apply bg-gradient-to-r from-purple-700 via-purple-500 to-purple-300;
+  }
+
+  /* Animações suaves - mobile optimized */
+  .hover-lift {
+    @apply transition-transform duration-200;
+  }
+  
+  /* Desktop hover effects */
+  @screen md {
+    .hover-lift:hover {
+      @apply -translate-y-1 shadow-lg;
+    }
+  }
+
+  /* Mobile-first spacing */
+  .section-padding {
+    @apply px-4 py-6 md:px-6 md:py-8 lg:px-8 lg:py-12;
+  }
+
+  /* Mobile-first grid layouts */
+  .mobile-grid {
+    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 md:gap-6;
+  }
+
+  .mobile-grid-2 {
+    @apply grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6;
+  }
+
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  /* Safe area handling for mobile */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Fontes personalizadas */
+.font-inter {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.font-poppins {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  /* Improve scroll performance on mobile */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Optimize tap targets */
+  button, a, input, select, textarea {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
+
+/* Custom scrollbar for better mobile experience */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
