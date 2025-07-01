@@ -29,6 +29,7 @@ import { PhotoManager } from '@/components/PhotoManager';
 import { PaletteResults } from '@/components/PaletteResults';
 import { ConsultationWizard } from '@/components/ConsultationWizard';
 import { NotificationCenter } from '@/components/NotificationCenter';
+import { AuthModal } from '@/components/AuthModal';
 
 // Hooks e utilitários
 import { realDataSeeder } from '@/utils/realDataSeeder';
@@ -38,6 +39,32 @@ function AppContent() {
   const isMobile = useIsMobile();
   const pwa = usePWA();
   const [isDataSeeded, setIsDataSeeded] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authLoadingState, setAuthLoadingState] = useState(false);
+
+  // Funções globais de autenticação
+  const handleLogin = async (data: any) => {
+    setAuthLoadingState(true);
+    try {
+      // Aqui você pode usar seu método de login real
+      setShowAuthModal(false);
+    } catch (error) {
+      // Trate o erro se necessário
+    } finally {
+      setAuthLoadingState(false);
+    }
+  };
+  const handleRegister = async (data: any) => {
+    setAuthLoadingState(true);
+    try {
+      // Aqui você pode usar seu método de cadastro real
+      setShowAuthModal(false);
+    } catch (error) {
+      // Trate o erro se necessário
+    } finally {
+      setAuthLoadingState(false);
+    }
+  };
 
   // Seed de dados reais na primeira execução
   useEffect(() => {
@@ -83,7 +110,7 @@ function AppContent() {
         onLogout={() => {}}
         onUpgrade={() => {}}
         userId={user?.uid || ''}
-        onAuthClick={() => {}}
+        onAuthClick={() => setShowAuthModal(true)}
       />
       <main className="container mx-auto px-4 py-8">
         <Routes>
@@ -106,6 +133,13 @@ function AppContent() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+      <AuthModal 
+        isOpen={showAuthModal}
+        onOpenChange={setShowAuthModal}
+        onLogin={handleLogin}
+        onRegister={handleRegister}
+        loading={authLoadingState}
+      />
       <NotificationCenter />
       <Toaster />
       <PWAInstallBanner 

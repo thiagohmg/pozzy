@@ -55,7 +55,6 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState(getInitialSection());
   const [activeSubSection, setActiveSubSection] = useState<string>(getInitialSubSection());
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const { toast } = useToast();
   const { currentPalette, isLoading: palettesLoading, savePalette } = useSavedPalettes();
   const colorPalette = currentPalette?.data || null;
@@ -114,47 +113,6 @@ const Index = () => {
       localStorage.setItem('activeSubSection', activeSubSection);
     } catch {}
   }, [activeSubSection]);
-
-  const handleLogin = async (data: any) => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword(data);
-      if (error) throw error;
-      toast({ title: 'Login bem-sucedido!', description: 'Bem-vindo(a) de volta!' });
-      setShowAuthModal(false);
-    } catch (error: any) {
-      toast({ title: 'Erro no login', description: error.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRegister = async (data: any) => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signUp(data);
-      if (error) throw error;
-      toast({ title: 'Cadastro realizado!', description: 'Verifique seu e-mail para confirmar a conta.' });
-      setShowAuthModal(false);
-    } catch (error: any) {
-      toast({ title: 'Erro no cadastro', description: error.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      toast({ title: 'Você saiu da sua conta.' });
-    } catch (error: any) {
-      toast({ title: 'Erro ao sair', description: error.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSearch = async (query: string) => {
     const searchesLeft = 5 - (user?.searchesUsed ?? 0);
@@ -433,13 +391,6 @@ const Index = () => {
       <UpgradeModal
         open={showUpgradeModal}
         onOpenChange={setShowUpgradeModal}
-      />
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onOpenChange={setShowAuthModal}
-        onLogin={handleLogin}
-        onRegister={handleRegister}
-        loading={loading}
       />
       <PWAInstallBanner 
         isInstallable={pwa.isInstallable}
