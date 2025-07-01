@@ -50,12 +50,12 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister, loading
   };
 
   return (
-    <Card className="w-full max-w-md p-4 border-0 shadow-none">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">
+    <Card className="w-full max-w-md p-4 border-0 shadow-none mt-12">
+      <CardHeader className="text-center pt-8 pb-2">
+        <CardTitle className="text-2xl mb-2">
           {isLoginView ? 'Bem-vindo(a) de volta!' : 'Crie sua conta'}
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="mb-2">
           {isLoginView ? 'Acesse para descobrir seu estilo.' : 'Cadastre-se para uma experiência completa.'}
         </CardDescription>
       </CardHeader>
