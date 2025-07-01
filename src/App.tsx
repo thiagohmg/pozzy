@@ -16,7 +16,6 @@ import Index from '@/pages/Index';
 import NotFound from '@/pages/NotFound';
 
 // Componentes Reais (substituindo os mockados)
-import { RealProductSearch } from '@/components/RealProductSearch';
 import { RealWishlist } from '@/components/RealWishlist';
 import { RealTryOn } from '@/components/RealTryOn';
 import { RealOutfitGenerator } from '@/components/RealOutfitGenerator';
@@ -89,7 +88,7 @@ function AppContent() {
       <main className="container mx-auto px-4 py-8">
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/discover" element={<RealProductSearch />} />
+          <Route path="/discover" element={<Index />} />
           <Route path="/wishlist" element={<RealWishlist />} />
           <Route path="/try-on" element={<RealTryOn />} />
           <Route path="/outfit-generator" element={<RealOutfitGenerator />} />
