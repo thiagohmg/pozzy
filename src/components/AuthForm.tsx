@@ -17,13 +17,27 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister, loading
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   
+  // Função para validar senha forte
+  function isStrongPassword(pw: string) {
+    return pw.length >= 8 && /[A-Za-z]/.test(pw) && /[0-9]/.test(pw);
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (isLoginView) {
       await onLogin({ email, password });
     } else {
-      await onRegister({ email, password });
+      if (!isStrongPassword(password)) {
+        setPasswordError('A senha deve ter pelo menos 8 caracteres, incluindo letras e números.');
+        return;
+      } else {
+        setPasswordError('');
+      }
+      await onRegister({ name, phone, email, password });
     }
   };
 
@@ -39,6 +53,35 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister, loading
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
+          {!isLoginView && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="name">Nome</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Seu nome completo"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Telefone</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="(99) 99999-9999"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  disabled={loading}
+                  pattern="\(\d{2}\) \d{5}-\d{4}|\d{11}|\d{2} \d{5}-\d{4}|\d{10,11}"
+                />
+              </div>
+            </>
+          )}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -72,6 +115,9 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister, loading
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
+            {!isLoginView && passwordError && (
+              <div className="text-sm text-red-600 mt-1">{passwordError}</div>
+            )}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
