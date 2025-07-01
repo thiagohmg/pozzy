@@ -11,8 +11,6 @@ import { ToolsSection } from "@/components/sections/ToolsSection";
 import { useSavedPalettes } from "@/hooks/useSavedPalettes";
 import { Sparkles } from "lucide-react";
 import { UpgradeModal } from "@/components/UpgradeModal";
-import { Navbar } from "@/components/Navbar";
-import { usePWA } from '@/hooks/usePWA';
 import { AuthModal } from "@/components/AuthModal";
 import { supabase } from '@/integrations/supabase/client';
 import { Session } from '@supabase/supabase-js';
@@ -393,15 +391,6 @@ const Index = () => {
 
   return (
     <>
-        <Navbar
-          user={user}
-        searchesLeft={5 - (user?.searchesUsed ?? 0)}
-        isPremium={user?.isPremium ?? false}
-        onLogout={handleLogout}
-        onUpgrade={() => setShowUpgradeModal(true)}
-        userId={user?.uid ?? ''}
-        onAuthClick={() => setShowAuthModal(true)}
-      />
       <div className="flex flex-col min-h-screen pt-16">
         <main className="flex-grow pb-24 md:pb-8">
           {!isSetupComplete && (
