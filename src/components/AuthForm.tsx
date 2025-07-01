@@ -20,6 +20,8 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister, loading
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   
   // Função para validar senha forte
   function isStrongPassword(pw: string) {
@@ -36,6 +38,12 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister, loading
         return;
       } else {
         setPasswordError('');
+      }
+      if (password !== confirmPassword) {
+        setConfirmPasswordError('As senhas não coincidem.');
+        return;
+      } else {
+        setConfirmPasswordError('');
       }
       await onRegister({ name, phone, email, password });
     }
@@ -119,6 +127,23 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister, loading
               <div className="text-sm text-red-600 mt-1">{passwordError}</div>
             )}
           </div>
+          {!isLoginView && (
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Repetir senha</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Repita sua senha"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                disabled={loading}
+              />
+              {confirmPasswordError && (
+                <div className="text-sm text-red-600 mt-1">{confirmPasswordError}</div>
+              )}
+            </div>
+          )}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <Button type="submit" className="w-full btn-primary" disabled={loading}>
