@@ -170,6 +170,8 @@ export function useProductSearch(): UseProductSearchReturn {
       return [];
     }
 
+    console.log('Dados retornados do Supabase:', data);
+
     return (data || []).map((item: any) => ({
       ...item,
       source: item.source || 'local',
