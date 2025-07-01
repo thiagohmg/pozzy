@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -243,3 +242,27 @@ export const PaletteResults = ({
     </Card>
   );
 };
+
+const pozzyPalette = [
+  { name: "Coral Suave", hex: "#FFB6A1" },
+  { name: "Lavanda", hex: "#B8A1FF" },
+  { name: "Verde Menta", hex: "#B8FFD9" },
+  { name: "Azul Serenity", hex: "#AEE9F9" },
+  { name: "Dourado Claro", hex: "#FFE5B4" },
+  { name: "Lilás Acinzentado", hex: "#A68DAD" },
+  { name: "Cinza Escuro", hex: "#2D2D2D" },
+];
+
+export const PozzyColorPalette: React.FC = () => (
+  <div style={{ background: '#fff', padding: 32, borderRadius: 16, boxShadow: '0 2px 8px #0001', maxWidth: 600, margin: '40px auto' }}>
+    <h2 style={{ textAlign: 'center', marginBottom: 24, fontWeight: 600, fontSize: 24 }}>Paleta Pozzy</h2>
+    <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+      {pozzyPalette.map((color) => (
+        <div key={color.hex} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 12, background: color.hex, border: '1.5px solid #eee', marginBottom: 8 }} />
+          <span style={{ fontSize: 13, color: '#444', textAlign: 'center' }}>{color.name}<br /><span style={{ fontFamily: 'monospace', color: '#888' }}>{color.hex}</span></span>
+        </div>
+      ))}
+    </div>
+  </div>
+);

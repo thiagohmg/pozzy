@@ -50,7 +50,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister, loading
   };
 
   return (
-    <Card className="w-full max-w-md p-4 border-0 shadow-none mt-12">
+    <Card className="w-full max-w-md p-4 border-0 shadow-none mt-6 max-h-[90vh] overflow-y-auto">
       <CardHeader className="text-center pt-8 pb-2">
         <CardTitle className="text-2xl mb-2">
           {isLoginView ? 'Bem-vindo(a) de volta!' : 'Crie sua conta'}

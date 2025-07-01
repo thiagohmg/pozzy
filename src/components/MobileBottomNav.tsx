@@ -51,7 +51,7 @@ export const MobileBottomNav = ({ activeSection, onSectionChange, userId }: Mobi
             </button>
           );
         })}
-        <MobileProfileMenu userId={userId} />
+        {userId && <MobileProfileMenu userId={userId} />}
       </div>
     </nav>
   );

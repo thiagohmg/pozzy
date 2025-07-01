@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,16 @@ import { Camera, Upload, X, Plus, Sparkles, Image } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { useCamera } from "@/hooks/useCamera";
 import { PhotoSelector } from "./PhotoSelector";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 interface Photo {
   id: string;
@@ -39,6 +48,9 @@ export const PhotoManager = ({
     stopCamera,
     capturePhoto
   } = useCamera();
+  const [pendingPhoto, setPendingPhoto] = useState<{ data: string; name: string } | null>(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
 
   const addPhoto = useCallback((photoData: string, name: string) => {
     if (photos.length >= 3) {
@@ -83,14 +95,89 @@ export const PhotoManager = ({
     });
   }, [photos, onPhotosChange, toast]);
 
+  // Função utilitária para checar se a imagem está clara
+  function isImageBright(imageData: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.src = imageData;
+      img.onload = function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return resolve(false);
+        ctx.drawImage(img, 0, 0);
+        const imageDataObj = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let total = 0;
+        for (let i = 0; i < imageDataObj.data.length; i += 4) {
+          // Média dos canais RGB
+          total += (imageDataObj.data[i] + imageDataObj.data[i + 1] + imageDataObj.data[i + 2]) / 3;
+        }
+        const avg = total / (imageDataObj.data.length / 4);
+        resolve(avg > 80); // 0-255, 80 é um valor razoável para "claro"
+      };
+      img.onerror = function () {
+        resolve(false);
+      };
+    });
+  }
+
+  // Função utilitária para checar proporção de corpo inteiro (altura > 1.3x largura)
+  function isFullBodyProportion(imageData: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.src = imageData;
+      img.onload = function () {
+        resolve(img.height / img.width > 1.3);
+      };
+      img.onerror = function () {
+        resolve(false);
+      };
+    });
+  }
+
+  // Validação antes de salvar a foto
+  const confirmAndSavePhoto = useCallback(async () => {
+    if (pendingPhoto) {
+      // Validação automática
+      const bright = await isImageBright(pendingPhoto.data);
+      const fullBody = await isFullBodyProportion(pendingPhoto.data);
+      if (!bright) {
+        toast({
+          title: "Foto muito escura",
+          description: "Tire a foto em um ambiente bem iluminado.",
+          variant: "destructive"
+        });
+        return;
+      }
+      if (!fullBody) {
+        toast({
+          title: "Foto não parece ser de corpo inteiro",
+          description: "Certifique-se de que seu corpo inteiro, incluindo os pés, apareça na foto.",
+          variant: "destructive"
+        });
+        return;
+      }
+      addPhoto(pendingPhoto.data, pendingPhoto.name);
+      toast({
+        title: "Sua foto foi salva em Minhas Fotos!",
+        description: "Você pode visualizar e gerenciar suas fotos salvas.",
+        variant: "default"
+      });
+      setPendingPhoto(null);
+      setShowConfirm(false);
+    }
+  }, [pendingPhoto, addPhoto, toast]);
+
   const handleCapture = useCallback(() => {
     const imageData = capturePhoto();
     if (imageData) {
-      addPhoto(imageData, `Foto ${photos.length + 1}`);
+      setPendingPhoto({ data: imageData, name: `Foto ${photos.length + 1}` });
+      setShowConfirm(true);
       stopCamera();
       setActivePhotoIndex(null);
     }
-  }, [capturePhoto, addPhoto, photos.length, stopCamera]);
+  }, [capturePhoto, photos.length, stopCamera]);
 
   const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -108,10 +195,11 @@ export const PhotoManager = ({
     const reader = new FileReader();
     reader.onload = (e) => {
       const imageData = e.target?.result as string;
-      addPhoto(imageData, file.name);
+      setPendingPhoto({ data: imageData, name: file.name });
+      setShowConfirm(true);
     };
     reader.readAsDataURL(file);
-  }, [addPhoto, toast]);
+  }, [toast]);
 
   const handleStartCamera = useCallback(() => {
     setActivePhotoIndex(photos.length);
@@ -136,6 +224,29 @@ export const PhotoManager = ({
       });
     }
   };
+
+  // Nova etapa: instruções antes de permitir upload/câmera
+  if (showInstructions) {
+    return (
+      <div className="max-w-xl mx-auto p-6 bg-white rounded-xl shadow-md flex flex-col items-center space-y-6">
+        <h2 className="text-2xl font-bold text-purple-700 text-center">Como tirar a foto perfeita?</h2>
+        <ul className="text-gray-700 text-left list-disc pl-6 space-y-1">
+          <li>Tire uma foto de <b>corpo inteiro</b>, de frente para a câmera.</li>
+          <li>Certifique-se de que <b>os pés estejam visíveis</b> (de preferência descalços).</li>
+          <li>Use um <b>fundo claro e neutro</b>.</li>
+          <li>Evite sombras, filtros ou luz muito forte/escura.</li>
+          <li>Vista roupas neutras para melhor análise de paleta.</li>
+        </ul>
+        <div className="flex flex-col items-center">
+          <span className="text-sm text-gray-500 mb-2">Exemplo de foto ideal:</span>
+          <img src="/public/placeholder.svg" alt="Exemplo de foto ideal" className="rounded-lg border shadow w-48 h-72 object-cover bg-gray-100" />
+        </div>
+        <Button className="btn-primary mt-4" onClick={() => setShowInstructions(false)}>
+          Entendi, quero tirar/enviar minha foto
+        </Button>
+      </div>
+    );
+  }
 
   // Se não tem fotos e não está mostrando seletor, mostrar opções iniciais
   if (photos.length === 0 && !showPhotoSelector && !isActive) {
@@ -371,6 +482,26 @@ export const PhotoManager = ({
           </CardContent>
         </Card>
       )}
+
+      {/* Modal de confirmação de salvamento de foto */}
+      <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Deseja salvar esta foto?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Sua foto será salva em "Minhas Fotos" e poderá ser usada para análise de paleta e looks.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => { setPendingPhoto(null); setShowConfirm(false); }}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmAndSavePhoto} autoFocus>
+              Salvar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

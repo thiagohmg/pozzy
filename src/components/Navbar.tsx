@@ -4,8 +4,14 @@ import { Button } from "@/components/ui/button";
 import { NotificationCenter } from './NotificationCenter';
 import { WebProfileMenu } from './WebProfileMenu';
 
+interface User {
+  uid: string;
+  email: string;
+  isPremium?: boolean;
+}
+
 interface NavbarProps {
-  user: any; // Simplificado para a restauração
+  user: User | null;
   searchesLeft: number;
   isPremium: boolean;
   onLogout: () => void;

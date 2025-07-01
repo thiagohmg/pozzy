@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Palette, Search, Sparkles } from 'lucide-react';
+import { Palette, Search, Sparkles, Loader2 } from 'lucide-react';
 import { SearchHistory } from "./SearchHistory";
+import { useProductSearch } from "@/hooks/useProductSearch";
+import { ProductCard } from "./ProductCard";
 
 interface SearchInterfaceProps {
   onSearch: (query: string) => void;
@@ -19,20 +21,46 @@ export const SearchInterface = ({
   onSearch,
   searchesLeft,
   isPremium,
-  loading,
-  results,
+  loading: externalLoading,
+  results: externalResults,
   user,
   onProductTryOn,
   colorPalette
 }: SearchInterfaceProps) => {
   const [query, setQuery] = useState('');
   const searchHistoryRef = useRef<any>(null);
+  
+  // Usar o novo hook de busca
+  const {
+    products,
+    loading: searchLoading,
+    error,
+    search,
+    hasMore,
+    loadMore
+  } = useProductSearch();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Determinar se deve usar busca externa ou interna
+  const useInternalSearch = true; // Por enquanto, usar sempre busca interna
+  const loading = useInternalSearch ? searchLoading : externalLoading;
+  const results = useInternalSearch ? products : externalResults;
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
       const searchQuery = query.trim();
-      onSearch(searchQuery);
+      
+      if (useInternalSearch) {
+        // Usar busca interna
+        await search(searchQuery, {
+          category: colorPalette?.category,
+          priceRange: colorPalette?.priceRange,
+          colors: colorPalette?.colors?.ideal
+        });
+      } else {
+        // Usar busca externa (original)
+        onSearch(searchQuery);
+      }
       
       // Add to search history
       const savedHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
@@ -44,9 +72,18 @@ export const SearchInterface = ({
     }
   };
 
-  const handleHistorySelect = (historicalQuery: string) => {
+  const handleHistorySelect = async (historicalQuery: string) => {
     setQuery('');
-    onSearch(historicalQuery);
+    
+    if (useInternalSearch) {
+      await search(historicalQuery, {
+        category: colorPalette?.category,
+        priceRange: colorPalette?.priceRange,
+        colors: colorPalette?.colors?.ideal
+      });
+    } else {
+      onSearch(historicalQuery);
+    }
   };
 
   return (
@@ -106,13 +143,66 @@ export const SearchInterface = ({
             className="bg-orange-500 hover:bg-orange-600"
           >
             {loading ? (
-              <Sparkles className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Search className="h-4 w-4" />
             )}
           </Button>
         </div>
       </form>
+
+      {/* Erro */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-700 text-sm">{error}</p>
+        </div>
+      )}
+
+      {/* Resultados */}
+      {results.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">
+              {results.length} produto(s) encontrado(s)
+            </h3>
+            {useInternalSearch && (
+              <span className="text-sm text-gray-500">
+                Buscando em múltiplas lojas...
+              </span>
+            )}
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {results.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onTryOn={onProductTryOn}
+                user={user}
+              />
+            ))}
+          </div>
+
+          {/* Botão "Carregar Mais" */}
+          {hasMore && (
+            <div className="text-center pt-4">
+              <Button
+                onClick={loadMore}
+                disabled={loading}
+                variant="outline"
+                className="w-full max-w-xs"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <Sparkles className="h-4 w-4 mr-2" />
+                )}
+                Carregar Mais Produtos
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Estado Vazio */}
       {!loading && results.length === 0 && (

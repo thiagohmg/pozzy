@@ -17,6 +17,7 @@ import { AuthModal } from "@/components/AuthModal";
 import { supabase } from '@/integrations/supabase/client';
 import { Session } from '@supabase/supabase-js';
 import { PWAInstallBanner } from "@/components/PWAInstallBanner";
+import { PozzyColorPalette } from "@/components/PaletteResults";
 
 interface AppUser {
   uid: string;
@@ -409,22 +410,34 @@ const Index = () => {
             />
           )}
 
-            <MainNavigation 
-              activeSection={activeSection} 
-              onSectionChange={handleSectionChange}
-              onSubSectionChange={handleSubSectionChange}
-            />
+            {/* Título e navegação só no desktop */}
+            <h1 className="hidden md:block text-3xl font-bold text-center mt-8 mb-6">
+              Transforme seu visual com inteligência artificial
+            </h1>
+            <div className="hidden md:block">
+              <MainNavigation 
+                activeSection={activeSection} 
+                onSectionChange={handleSectionChange}
+                onSubSectionChange={handleSubSectionChange}
+              />
+            </div>
+
+            {/* Se o usuário tiver paleta salva, mostra a paleta */}
+            {colorPalette && (
+              <PozzyColorPalette />
+            )}
 
             {renderActiveSection()}
       </main>
 
-        {user && (
-      <MobileBottomNav 
-        activeSection={activeSection}
+        {/* Menu inferior só no mobile */}
+        <div className="md:hidden">
+          <MobileBottomNav 
+            activeSection={activeSection}
             onSectionChange={setActiveSection}
-            userId={user.uid}
-      />
-        )}
+            userId={user?.uid ?? ""}
+          />
+        </div>
         </div>
 
       <UpgradeModal
