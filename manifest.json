@@ -17,18 +17,18 @@
       "type": "image/x-icon"
     },
     {
-      "src": "/icons/icon-192x192.png",
-      "type": "image/png",
+      "src": "/icons/icon-192x192.svg",
+      "type": "image/svg+xml",
       "sizes": "192x192"
     },
     {
-      "src": "/icons/icon-512x512.png",
-      "type": "image/png",
+      "src": "/icons/icon-512x512.svg",
+      "type": "image/svg+xml",
       "sizes": "512x512"
     },
     {
-      "src": "/icons/maskable-icon-512x512.png",
-      "type": "image/png",
+      "src": "/icons/maskable-icon-512x512.svg",
+      "type": "image/svg+xml",
       "sizes": "512x512",
       "purpose": "maskable"
     }
@@ -39,14 +39,14 @@
       "short_name": "Descobrir",
       "description": "Encontre novas tendências e peças",
       "url": "/?section=descobrir",
-      "icons": [{ "src": "/icons/shortcut-discover.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/icons/shortcut-discover.svg", "sizes": "192x192" }]
     },
     {
       "name": "Minha Consultoria",
       "short_name": "Consultoria",
       "description": "Receba conselhos de moda personalizados",
       "url": "/?section=consultoria",
-      "icons": [{ "src": "/icons/shortcut-consultoria.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/icons/shortcut-consultoria.svg", "sizes": "192x192" }]
     }
   ],
   "screenshots": [
